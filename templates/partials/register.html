@@ -1,17 +1,27 @@
 <title>Register</title>
 
-{% if error %}
-<p>{{ error }}</p>
+{% if message %}
+    {% if message.error %}
+        <div class="fs-3 position-absolute w-100 d-flex justify-content-center align-items-center">
+            <p class="text-danger">{{ message.error }}</p>
+        </div>
+    {% endif %}
 {% endif %}
 
 <form hx-post="/register"
       hx-target="main"
-      class="form mx-auto mt-5 w-auto d-flex flex-column justify-content-center align-items-center">
+      class="form mx-auto mt-4 pt-5 w-auto d-flex flex-column justify-content-center align-items-center">
     <label class="form-label mb-4">
         Username
-        <input type="text" autofocus autocomplete="off" name="username" class="form-control"/>
+        <input type="text"
+               autofocus
+               autocomplete="off"
+               name="username"
+               class="form-control"
+               {% if username %}value="{{ username }}"{% endif %}/>
     </label>
 
+    <p class="form-text px-2 text-center">Password should have 1 uppercase, lowercase, digit and length of at least 8</p>
     <label class="form-label mb-4">
         Password
         <input type="password" name="password" class="form-control">

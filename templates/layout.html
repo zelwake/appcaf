@@ -14,7 +14,7 @@
     <title>APP-CAF</title>
 </head>
 <body>
-<nav class="navbar bg-dark border-bottom px-5 py-3">
+<nav class="navbar bg-dark border-bottom px-4 py-3">
     {% if session["account_id"] %}
         <ul class="navbar-nav flex-row me-auto">
             <li hx-get="/app" hx-target="main" class="nav-item text-white fs-3">Home</li>
@@ -25,8 +25,9 @@
         <ul class="navbar-nav flex-row me-auto">
             <li hx-get="/" hx-target="main" class="nav-item text-white fs-3">Home</li>
         </ul>
-        <button hx-get="/login" hx-target="main" type="button" class="btn btn-success me-3">Login</button>
-        <button hx-get="/register" hx-target="main" type="button" class="btn btn-outline-success">Register</button>
+        <button hx-get="/login" hx-target="main" type="button" class="btn btn-success btn-sm me-2">Login</button>
+        <button hx-get="/register" hx-target="main" type="button" class="btn btn-outline-success btn-sm">Register
+        </button>
     {% endif %}
 </nav>
 
@@ -38,7 +39,7 @@
     {% endif %}
 {% endwith %}
 
-<main id="main">
+<main id="main" class="position-relative">
     {% block main %}
     {% endblock main %}
 </main>
