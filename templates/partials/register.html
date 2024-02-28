@@ -1,0 +1,25 @@
+<title>Register</title>
+
+{% if error %}
+<p>{{ error }}</p>
+{% endif %}
+
+<form hx-post="/register"
+      hx-target="main"
+      class="form mx-auto mt-5 w-auto d-flex flex-column justify-content-center align-items-center">
+    <label class="form-label mb-4">
+        Username
+        <input type="text" autofocus autocomplete="off" name="username" class="form-control"/>
+    </label>
+
+    <label class="form-label mb-4">
+        Password
+        <input type="password" name="password" class="form-control">
+    </label>
+
+    <label class="form-label mb-4">
+        Password
+        <input type="password" name="correction" class="form-control">
+    </label>
+    <button type="submit" class="btn btn-success">Register</button>
+</form>
