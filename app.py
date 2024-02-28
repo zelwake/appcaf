@@ -27,7 +27,8 @@ def index():
 def login():
     htmx = request.headers.get('HX-Request') is not None
     if request.method == 'POST':
-        username = request.form.get('username')
+        session.clear()
+        username = request.form.get('username').strip() if not None else ''
         if not username:
             if htmx:
                 return render_template('partials/login.html', error='Missing username')
@@ -41,11 +42,23 @@ def login():
             flash('Please enter password')
             return render_template('login.html')
 
-        # TODO connect to db and check if user exists and password hashes to same
-        if username == 'admin' and password == 'password':
-            session['account_id'] = 1
+        user = db.execute('SELECT * FROM account WHERE username = ?', username)
+        valid_user = True
+        check_pw = None
+        if not user:
+            valid_user = False
+            check_pw = False
+        else:
+            check_pw = check_password_hash(user[0]['password'], password)
 
-        render_htmx("partials/dashboard.html", "/app/dashboard.html") if htmx else redirect("/app/dashboard")
+        if not check_pw or not valid_user:
+            error = "Username or password is incorrect"
+            return render_htmx('partials/login.html', '/login', error=error
+                               ) if htmx else render_template('login.html', error=error)
+
+        session['account_id'] = user[0]['id']
+
+        return render_htmx("partials/dashboard.html", "/app") if htmx else redirect("/app")
 
     if htmx:
         response = make_response(render_template('partials/login.html'))
@@ -92,8 +105,8 @@ def register():
             return render_page(htmx, 'Something went wrong', username=username)
 
         if htmx:
-            return render_htmx('partial/dashboard.html', '/app/dashboard', username=username)
-        return redirect('/app/dashboard.html')
+            return render_htmx('partial/dashboard.html', '/app', username=username)
+        return redirect('/app')
 
     return render_htmx('partials/register.html', '/register') if htmx else render_template('register.html')
 

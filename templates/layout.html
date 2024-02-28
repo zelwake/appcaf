@@ -17,13 +17,13 @@
 <nav class="navbar bg-dark border-bottom px-4 py-3">
     {% if session["account_id"] %}
         <ul class="navbar-nav flex-row me-auto">
-            <li hx-get="/app" hx-target="main" class="nav-item text-white fs-3">Home</li>
-            <li hx-get="/app/test" hx-target="main" class="nav-item text-white fs-3">Test</li>
+            <li hx-get="/app" hx-target="main" role="button" class="nav-item text-white fs-3">Home</li>
+            <li hx-get="/app/test" hx-target="main" role="button" class="nav-item text-white fs-3">Test</li>
         </ul>
         <button hx-get="/register" hx-target="main" type="button" class="btn btn-outline-secondary">Log out</button>
     {% else %}
         <ul class="navbar-nav flex-row me-auto">
-            <li hx-get="/" hx-target="main" class="nav-item text-white fs-3">Home</li>
+            <li hx-get="/" hx-target="main" role="button" class="nav-item text-white fs-3">Home</li>
         </ul>
         <button hx-get="/login" hx-target="main" type="button" class="btn btn-success btn-sm me-2">Login</button>
         <button hx-get="/register" hx-target="main" type="button" class="btn btn-outline-success btn-sm">Register
