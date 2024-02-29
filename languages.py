@@ -1,0 +1,1 @@
+languages = ['czech', 'english', 'french']

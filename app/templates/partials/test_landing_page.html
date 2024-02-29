@@ -1,0 +1,26 @@
+<title>Tests</title>
+
+<section class="d-flex flex-column align-items-center p-4">
+    <p>Create a new test</p>
+    <button hx-get="{{ url_for('test.create_test_page') }}" hx-target="main" type="button" class="btn btn-success">New test</button>
+</section>
+<section class="d-flex flex-column align-items-center p-4">
+    <p>Browse through your old tests</p>
+    {% if content.tests %}
+        {% for test in content.tests %}
+            <li class="container border-bottom mb-1 py-1">
+                <div class="row">
+                    <div class="col">{{ test.name }}</div>
+                    <div class="col">{{ test.round }}/{{ test.total }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2">{{ test.start_time }}</div>
+                    <button class="col" hx-get="test/run?id={{ test.id }}" hx-target="main" type="button">Finish test</button>
+                    <button class="col" hx-delete="test?id={{ test.id }}" hx-target="main" type="button">Delete test</button>
+                </div>
+            </li>
+        {% endfor %}
+    {% else %}
+        <h3>No tests to show yet</h3>
+    {% endif %}
+</section>

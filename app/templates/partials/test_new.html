@@ -1,0 +1,32 @@
+<title>Creating new test</title>
+
+<form hx-post="{{ url_for('test.create_test_page') }}" hx-target="main"
+      class="d-flex flex-column w-100 p-4 align-items-stretch">
+    <label class="mb-2">
+        <input type="text" name="name" placeholder="Test name" class="form-control" required/>
+    </label>
+
+    <label class="mb-2">
+        <select class="form-select" name="first_language" required>
+            <option selected disabled>Choose first language</option>
+            {% for language in content.languages %}
+                <option value="{{ language }}">{{ language }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label class="mb-2">
+        <select class="form-select" name="second_language" required>
+            <option selected disabled>Choose second language</option>
+            {% for language in content.languages %}
+                <option value="{{ language }}">{{ language }}</option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <label class="mb-2">
+        <input type="number" name="number" class="form-control" min="1" placeholder="Number of words" required>
+    </label>
+
+    <button type="submit" class="btn btn-lg btn-success">Create new test</button>
+</form>

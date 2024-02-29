@@ -44,7 +44,6 @@
     {% endblock main %}
 </main>
 
-<!--suppress HtmlUnknownTarget -->
-<script src="static/htmx.min.js"></script>
+<script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
 </body>
 </html>

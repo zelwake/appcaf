@@ -9,6 +9,8 @@ from app.blueprints.auth import auth_bp
 from app.blueprints.root import root_bp
 from flask_session import Session
 
+from app.blueprints.test import test_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -23,6 +25,7 @@ def create_app():
     app.register_blueprint(root_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(app_bp)
+    app.register_blueprint(test_bp)
     # app.register_error_handler(404, page_not_found)
 
     return app

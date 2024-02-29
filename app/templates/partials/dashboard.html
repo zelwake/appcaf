@@ -16,8 +16,9 @@
                     <div class="col">{{ test.round }}/{{ test.total }}</div>
                 </div>
                 <div class="row">
-                    <div class="col">{{ test.start_time }}</div>
+                    <div class="col-2">{{ test.start_time }}</div>
                     <button class="col" hx-get="test/run?id={{ test.id }}" hx-target="main">Finish test</button>
+                    <button class="col" hx-delete="test?id={{ test.id }}" hx-target="main">Delete test</button>
                 </div>
             </li>
         {% endfor %}

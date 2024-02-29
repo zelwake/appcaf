@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS test (
 CREATE TABLE IF NOT EXISTS test_word_relation (
     test_id INTEGER NOT NULL,
     word_id INTEGER NOT NULL,
-    language TEXT NOT NULL,
+    language_from TEXT NOT NULL,
+    language_to TEXT NOT NULL,
     try INT DEFAULT 0,
     answer_one TEXT,
     answer_two TEXT,
@@ -53,7 +54,6 @@ CREATE TABLE IF NOT EXISTS test_word_relation (
     FOREIGN KEY (word_id) REFERENCES czech_word(id) ON DELETE CASCADE,
     FOREIGN KEY (word_id) REFERENCES english_word(id) ON DELETE CASCADE,
     FOREIGN KEY (word_id) REFERENCES french_word(id) ON DELETE CASCADE,
-    CHECK (language IN ('czech', 'english', 'french')),
     PRIMARY KEY (test_id, word_id)
 );
 
