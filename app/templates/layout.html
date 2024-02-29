@@ -17,10 +17,10 @@
 <nav class="navbar bg-dark border-bottom px-4 py-3">
     {% if session["account_id"] %}
         <ul class="navbar-nav flex-row me-auto">
-            <li hx-get="/app" hx-target="main" role="button" class="nav-item text-white fs-3">Home</li>
-            <li hx-get="/app/test" hx-target="main" role="button" class="nav-item text-white fs-3">Test</li>
+            <li hx-get="/app" hx-target="main" role="button" class="nav-item text-white fs-3 me-2">Home</li>
+            <li hx-get="/app/test" hx-target="main" role="button" class="nav-item text-white fs-3 me-2">Test</li>
         </ul>
-        <button hx-get="/register" hx-target="main" type="button" class="btn btn-outline-secondary">Log out</button>
+        <button hx-get="/logout" hx-target="body" type="button" class="btn btn-outline-secondary">Log out</button>
     {% else %}
         <ul class="navbar-nav flex-row me-auto">
             <li hx-get="/" hx-target="main" role="button" class="nav-item text-white fs-3">Home</li>
@@ -44,6 +44,7 @@
     {% endblock main %}
 </main>
 
-<script src="/static/htmx.min.js"></script>
+<!--suppress HtmlUnknownTarget -->
+<script src="static/htmx.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,28 @@
+<title>Dashboard</title>
+<section class="d-flex flex-column w-100 justify-content-center align-items-center p-4">
+    <h3 class="fs-1 mt-4">Welcome {{ content.username }}</h3>
+
+    <p class="mt-4">Want to start a new test?</p>
+    <button hx-get="app/test/new" hx-target="main" class="btn btn-sm btn-outline-success mt-1">Create test</button>
+</section>
+<section class="d-flex flex-column w-100 justify-content-center align-items-center p-4">
+    <h4 class="fs-5">Active tests:</h4>
+    {% if last_five_tests %}
+        <ul>
+        {% for test in content.last_five_tests %}
+            <li class="container border-bottom mb-1 py-1">
+                <div class="row">
+                    <div class="col">{{ test.name }}</div>
+                    <div class="col">{{ test.round }}/{{ test.total }}</div>
+                </div>
+                <div class="row">
+                    <div class="col">{{ test.start_time }}</div>
+                    <button class="col" hx-get="test/run?id={{ test.id }}" hx-target="main">Finish test</button>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    	<p>No active tests</p>
+    {% endif %}
+</section>
