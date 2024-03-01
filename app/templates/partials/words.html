@@ -16,4 +16,7 @@
         </label>
         <button type="submit" class="btn btn-outline-success">Add</button>
     </form>
+    {% if content and content.message %}
+    <p>{{ content.message }}</p>
+    {% endif %}
 </div>

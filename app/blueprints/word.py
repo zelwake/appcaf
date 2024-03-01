@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, abort
 
 from db import db
-from helpers.database_helpers import get_word_id
+from helpers.database_helpers import get_word_id, AllowedWordTables, insert_word_pair, DatabaseWordPairTable
 from helpers.htmx import htmx
 from helpers.login_required import login_required
 from helpers.render_htmx import render_htmx
@@ -12,6 +12,7 @@ word_bp = Blueprint('word', __name__)
 @word_bp.get('/app/word')
 @login_required
 def words():
+    print(request.args)
     if htmx():
         return render_htmx('partials/words.html', '/app/word')
     return render_template('words.html')
@@ -28,28 +29,57 @@ def new_word():
 
     if (english_word and french_word) or (czech_word and french_word) or (czech_word and english_word) or (
             czech_word and french_word and english_word):
-        db.execute('BEGIN TRANSACTION;')
+        db.execute('BEGIN TRANSACTION')
 
         if english_word:
-            english_id = get_word_id(english_word, 'english_word')
+            english_id = get_word_id(english_word, AllowedWordTables.ENGLISH.value)
             if not english_id:
                 db.execute('ROLLBACK')
                 return abort(500)
 
         if czech_word:
-            czech_id = get_word_id(czech_word, 'czech_word')
+            czech_id = get_word_id(czech_word, AllowedWordTables.CZECH.value)
             if not czech_id:
                 db.execute('ROLLBACK')
                 return abort(500)
 
         if french_word:
-            french_id = get_word_id(french_word, 'french_word')
+            french_id = get_word_id(french_word, AllowedWordTables.FRENCH.value)
             if not french_id:
                 db.execute('ROLLBACK')
                 return abort(500)
 
         db.execute('COMMIT')
+    else:
+        if htmx():
+            return render_htmx('partials/words.html', '/app/word?c={czech_word}&f={french_word}&e={english_word}'), 400
+        return render_htmx('words.html'), 400
 
+    try:
+        db.execute('BEGIN TRANSACTION')
+        if english_id and french_id:
+            if not insert_word_pair(DatabaseWordPairTable.ENGLISH_FRENCH_PAIR.value, english_id, french_id):
+                db.execute('ROLLBACK')
+                return abort(500)
 
+        if english_id and czech_id:
+            if not insert_word_pair(DatabaseWordPairTable.CZECH_ENGLISH_PAIR.value, czech_id, english_id):
+                db.execute('ROLLBACK')
+                return abort(500)
+
+        if czech_id and french_id:
+            if not insert_word_pair(DatabaseWordPairTable.CZECH_FRENCH_PAIR.value, czech_id, french_id):
+                db.execute('ROLLBACK')
+                return abort(500)
+
+        db.execute('COMMIT')
+    except RuntimeError as e:
+        print(f'Error while creating pairs:\n{e}')
+        db.execute('ROLLBACK')
+        return abort(500)
+
+    if htmx():
+        return render_htmx('partials/words.html', content={'message': 'success'})
+    return render_htmx('words.html', content={'message': 'success'})
 
 
