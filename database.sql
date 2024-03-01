@@ -1,38 +1,38 @@
 CREATE TABLE IF NOT EXISTS czech_word (
-    id INT NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     word TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS english_word (
-    id INT NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     word TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS french_word (
-    id INT NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     word TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS czech_english_pair (
-    czech_word_id INT NOT NULL REFERENCES czech_word(id),
-    english_word_id INT NOT NULL REFERENCES english_word(id),
+    czech_word_id INTEGER NOT NULL REFERENCES czech_word(id),
+    english_word_id INTEGER NOT NULL REFERENCES english_word(id),
     PRIMARY KEY (czech_word_id, english_word_id)
 );
 
 CREATE TABLE IF NOT EXISTS czech_french_pair (
-    czech_word_id INT NOT NULL REFERENCES czech_word(id),
-    french_word_id INT NOT NULL REFERENCES french_word(id),
+    czech_word_id INTEGER NOT NULL REFERENCES czech_word(id),
+    french_word_id INTEGER NOT NULL REFERENCES french_word(id),
     PRIMARY KEY (czech_word_id, french_word_id)
 );
 
 CREATE TABLE IF NOT EXISTS english_french_pair (
-    english_word_id INT NOT NULL REFERENCES english_word(id),
-    french_word_id INT NOT NULL REFERENCES french_word(id),
+    english_word_id INTEGER NOT NULL REFERENCES english_word(id),
+    french_word_id INTEGER NOT NULL REFERENCES french_word(id),
     PRIMARY KEY (english_word_id, french_word_id)
 );
 
 CREATE TABLE IF NOT EXISTS test (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     total INT NOT NULL,
     round INT DEFAULT 0,

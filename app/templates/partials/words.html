@@ -1,0 +1,19 @@
+<title>Words</title>
+
+<div>
+    <form hx-post="/app/word" hx-target="main" class="d-flex flex-column align-items-center w-100 w-lg-25 mt-4">
+        <label>
+            Czech word
+            <input type="text" class="form-control" name="czech_word">
+        </label>
+        <label>
+            French word
+            <input type="text" class="form-control" name="french_word">
+        </label>
+        <label>
+            English word
+            <input type="text" class="form-control" name="english_word">
+        </label>
+        <button type="submit" class="btn btn-outline-success">Add</button>
+    </form>
+</div>
