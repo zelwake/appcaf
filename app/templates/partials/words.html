@@ -2,21 +2,24 @@
 
 <div>
     <form hx-post="/app/word" hx-target="main" class="d-flex flex-column align-items-center w-100 w-lg-25 mt-4">
-        <label>
+        <label class="mt-3">
             Czech word
-            <input type="text" class="form-control" name="czech_word">
+            <input type="text" class="form-control mt-1" name="czech_word" autofocus autocomplete="false"
+                   {% if content.czech_word %}value="{{ content.czech_word }}"{% endif %}>
         </label>
-        <label>
+        <label class="mt-3">
             French word
-            <input type="text" class="form-control" name="french_word">
+            <input type="text" class="form-control mt-1" name="french_word" autocomplete="false"
+                   {% if content.french_word %}value="{{ content.french_word }}"{% endif %}>
         </label>
-        <label>
+        <label class="mt-3">
             English word
-            <input type="text" class="form-control" name="english_word">
+            <input type="text" class="form-control mt-1" name="english_word" autocomplete="false"
+                   {% if content.english_word %}value="{{ content.english_word }}"{% endif %}>
         </label>
-        <button type="submit" class="btn btn-outline-success">Add</button>
+        <button type="submit" class="btn btn-outline-success btn-lg mt-3">Add</button>
     </form>
     {% if content and content.message %}
-    <p>{{ content.message }}</p>
+        <p class="mt-4 text-center text-success fs-2 fw-bold">{{ content.message }}</p>
     {% endif %}
 </div>

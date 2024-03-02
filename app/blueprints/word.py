@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, redirect
 
 from db import db
 from helpers.database_helpers import get_word_id, AllowedWordTables, insert_word_pair, DatabaseWordPairTable
@@ -12,10 +12,14 @@ word_bp = Blueprint('word', __name__)
 @word_bp.get('/app/word')
 @login_required
 def words():
-    print(request.args)
+    czech_word = request.args.get('c')
+    french_word = request.args.get('f')
+    english_word = request.args.get('e')
+    content = {"czech_word": czech_word, "english_word": english_word, "french_word": french_word}
+    query_url = request.url[request.url.find("?"):]
     if htmx():
-        return render_htmx('partials/words.html', '/app/word')
-    return render_template('words.html')
+        return render_htmx('partials/words.html', f'/app/word{query_url if len(query_url) > 1 else ""}', content=content)
+    return render_template('words.html', content=content)
 
 
 @word_bp.post('/app/word')
@@ -51,9 +55,18 @@ def new_word():
 
         db.execute('COMMIT')
     else:
-        if htmx():
-            return render_htmx('partials/words.html', '/app/word?c={czech_word}&f={french_word}&e={english_word}'), 400
-        return render_htmx('words.html'), 400
+        query = ''
+        if czech_word:
+            query += f'?c={czech_word}'
+        if english_word:
+            query += f'{"&" if len(query) else "?"}e={english_word}'
+        if french_word:
+            query += f'{"&" if len(query) else "?"}f={french_word}'
+
+        return redirect(f'/app/word{query}')
+        # if htmx():
+        #     return render_htmx('partials/words.html', f'/app/word{query}')
+        # return render_htmx('words.html')
 
     try:
         db.execute('BEGIN TRANSACTION')
@@ -79,7 +92,7 @@ def new_word():
         return abort(500)
 
     if htmx():
-        return render_htmx('partials/words.html', content={'message': 'success'})
-    return render_htmx('words.html', content={'message': 'success'})
+        return render_htmx('partials/words.html', content={'message': 'Successfully added!'})
+    return render_htmx('words.html', content={'message': 'Successfully added!'})
 
 
