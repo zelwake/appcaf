@@ -7,7 +7,7 @@
 </section>
 <section class="d-flex flex-column w-100 justify-content-center align-items-center p-4">
     <h4 class="fs-5">Active tests:</h4>
-    {% if last_five_tests %}
+    {% if content.last_five_tests %}
         <ul>
         {% for test in content.last_five_tests %}
             <li class="container border-bottom mb-1 py-1">
@@ -17,8 +17,8 @@
                 </div>
                 <div class="row">
                     <div class="col-2">{{ test.start_time }}</div>
-                    <button class="col" hx-get="test/run?id={{ test.id }}" hx-target="main">Finish test</button>
-                    <button class="col" hx-delete="test?id={{ test.id }}" hx-target="main">Delete test</button>
+                    <button class="col" hx-get="app/test/{{ test.id }}" hx-target="main">Finish test</button>
+                    <button class="col" hx-delete="app/test/{{ test.id }}" hx-target="main">Delete test</button>
                 </div>
             </li>
         {% endfor %}

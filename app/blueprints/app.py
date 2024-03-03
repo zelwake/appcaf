@@ -15,13 +15,6 @@ def dashboard():
     account_id = session.get('account_id')
     content = {}
 
-    last_five_tests = db.execute(
-        'SELECT id, name, start_time, round, total FROM test WHERE id IN ('
-        'SELECT test_id FROM test_account_relation WHERE account_id = ?'
-        ') AND finished = 0 ORDER BY start_time DESC LIMIT 5',
-        account_id)
-    content['last_five_tests'] = last_five_tests
-
     try:
         username = db.execute('SELECT username FROM account WHERE id = ?', account_id)[0]['username']
         content['username'] = username
@@ -30,6 +23,13 @@ def dashboard():
         if htmx():
             return render_htmx('partials/login.html', '/login')
         return redirect('/login')
+
+    last_five_tests = db.execute(
+        'SELECT id, name, start_time, round, total FROM test WHERE id IN ('
+        'SELECT test_id FROM test_account_relation WHERE account_id = ?'
+        ') AND finished = 0 ORDER BY start_time DESC LIMIT 5',
+        account_id)
+    content['last_five_tests'] = last_five_tests
 
     if htmx and not reload_page:
         return render_htmx('partials/dashboard.html', '/app', content=content)

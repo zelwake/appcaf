@@ -1,0 +1,36 @@
+<title>Test {{ content.language_from }} -> {{ content.language_to }}</title>
+
+<div>
+    <img src="public/flags/{{ content.language_from }}.png" alt="{{ content.language_from }}">
+    &triangleright;
+    <img src="public/flags/{{ content.language_to }}.png" alt="{{ content.language_to }}">
+</div>
+
+<p>{{ content.round }} / {{ content.total }}</p>
+
+<form hx-post="/app/test/{{ content.test_id }}" hx-target="main">
+    <h3>Word to translate:</h3>
+    <p>{{ content.word_from }}</p>
+    <label>
+        Answer:
+        <input type="text" name="answer" class="form-control">
+    </label>
+    <div>
+        {% if content.success %}<p class="text-success">Correct!</p>{% endif %}
+        {% if content.wrong %}<p class="text-danger">Incorrect</p>{% endif %}
+    </div>
+    <div>
+        <p>{% if content.correct_answer %}Correct answer is{% endif %}</p>
+        <p>{% if content.correct_answer %}{{ content.correct_answer }}{% endif %}</p>
+    </div>
+
+    <div class="d-flex align-items-stretch">
+        {% if content.correct_answer %}
+            <button type="submit" name="again" {% if content.disable_again %}disabled{% endif %}>Again</button>
+            <button type="button" hx-post="/app/test/{{ content.test_id }}?next=true" hx-target="main">Next</button>
+        {% else %}
+            <button type="submit" name="check">Check</button>
+        {% endif %}
+    </div>
+
+</form>
