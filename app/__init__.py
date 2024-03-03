@@ -5,6 +5,7 @@ from flask import Flask
 
 from app.blueprints.app import app_bp
 from app.blueprints.auth import auth_bp
+from app.blueprints.errors import error_bp
 from app.blueprints.root import root_bp
 from flask_session import Session
 
@@ -27,5 +28,6 @@ def create_app():
     app.register_blueprint(app_bp)
     app.register_blueprint(test_bp)
     app.register_blueprint(word_bp)
+    app.register_blueprint(error_bp)
 
     return app

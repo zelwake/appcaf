@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, make_response, session
+from flask import Blueprint, request, render_template, make_response, session, redirect
 
 from db import db
 from helpers.login_required import login_required
@@ -22,8 +22,14 @@ def dashboard():
         account_id)
     content['last_five_tests'] = last_five_tests
 
-    username = db.execute('SELECT username FROM account WHERE id = ?', account_id)[0]['username']
-    content['username'] = username
+    try:
+        username = db.execute('SELECT username FROM account WHERE id = ?', account_id)[0]['username']
+        content['username'] = username
+    except IndexError as e:
+        print(e)
+        if htmx():
+            return render_htmx('partials/login.html', '/login')
+        return redirect('/login')
 
     if htmx and not reload_page:
         return render_htmx('partials/dashboard.html', '/app', content=content)

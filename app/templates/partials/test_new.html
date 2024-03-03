@@ -1,32 +1,32 @@
 <title>Creating new test</title>
 
 <form hx-post="{{ url_for('test.create_test_page') }}" hx-target="main"
-      class="d-flex flex-column w-100 p-4 align-items-stretch">
-    <label class="mb-2">
-        <input type="text" name="name" placeholder="Test name" class="form-control" required/>
-    </label>
-
-    <label class="mb-2">
+      class="d-flex flex-column w-100 p-4 mt-4 align-items-stretch">
+    <label class="mb-3">
         <select class="form-select" name="first_language" required>
-            <option selected disabled>Choose first language</option>
+            <option selected disabled>From language</option>
             {% for language in content.languages %}
-                <option value="{{ language }}">{{ language }}</option>
+                <option value="{{ language }}">{{ language | capitalize }}</option>
             {% endfor %}
         </select>
     </label>
 
-    <label class="mb-2">
+    <label class="mb-3">
         <select class="form-select" name="second_language" required>
-            <option selected disabled>Choose second language</option>
+            <option selected disabled>To language</option>
             {% for language in content.languages %}
-                <option value="{{ language }}">{{ language }}</option>
+                <option value="{{ language }}">{{ language | capitalize }}</option>
             {% endfor %}
         </select>
     </label>
 
-    <label class="mb-2">
+    <label class="mb-3">
         <input type="number" name="number" class="form-control" min="1" placeholder="Number of words" required>
     </label>
 
     <button type="submit" class="btn btn-lg btn-success">Create new test</button>
 </form>
+
+{% if content.error %}
+<p class="fs-2 fw-bold text-center text-danger px-2">{{ content.error }}</p>
+{% endif %}

@@ -34,8 +34,10 @@ CREATE TABLE IF NOT EXISTS english_french_pair (
 CREATE TABLE IF NOT EXISTS test (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
+    language_from TEXT NOT NULL,
+    language_to TEXT NOT NULL,
     total INT NOT NULL,
-    round INT DEFAULT 0,
+    round INT DEFAULT 1,
     finished BOOLEAN NOT NULL,
     start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     finish_time TIMESTAMP,
@@ -45,15 +47,11 @@ CREATE TABLE IF NOT EXISTS test (
 CREATE TABLE IF NOT EXISTS test_word_relation (
     test_id INTEGER NOT NULL,
     word_id INTEGER NOT NULL,
-    language_from TEXT NOT NULL,
-    language_to TEXT NOT NULL,
+    round INTEGER NOT NULL,
     try INT DEFAULT 0,
     answer_one TEXT,
     answer_two TEXT,
     FOREIGN KEY (test_id) REFERENCES test(id),
-    FOREIGN KEY (word_id) REFERENCES czech_word(id) ON DELETE CASCADE,
-    FOREIGN KEY (word_id) REFERENCES english_word(id) ON DELETE CASCADE,
-    FOREIGN KEY (word_id) REFERENCES french_word(id) ON DELETE CASCADE,
     PRIMARY KEY (test_id, word_id)
 );
 

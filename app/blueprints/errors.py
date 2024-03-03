@@ -1,9 +1,9 @@
-from flask import render_template
+from flask import render_template, Blueprint
 
-# from run import app
+error_bp = Blueprint('errors', __name__)
 
 
-# @app.errorhandler(404)
+@error_bp.errorhandler(404)
 def page_not_found(error):
     print(error)
-    return render_template('page_not_found.html'), 404
+    return render_template('page_not_found.html')

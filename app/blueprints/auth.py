@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import db
 from helpers.check_password import check_password
+from helpers.htmx import htmx
 from helpers.render_htmx import render_htmx
 
 auth_bp = Blueprint('auth', __name__)
@@ -16,19 +17,18 @@ def logout():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    htmx = request.headers.get('HX-Request') is not None
     if request.method == 'POST':
         session.clear()
-        username = request.form.get('username').strip() if not None else ''
+        username = request.form.get('username', '').strip()
         if not username:
-            if htmx:
+            if htmx():
                 return render_template('partials/login.html', error='Missing username')
             flash('Please enter username')
             return render_template('login.html')
 
         password = request.form.get('password')
         if not password:
-            if htmx:
+            if htmx():
                 return render_template('partials/login.html', error='Missing password')
             flash('Please enter password')
             return render_template('login.html')
@@ -43,8 +43,9 @@ def login():
 
         if not check_pw or not valid_user:
             error = "Username or password is incorrect"
-            return render_htmx('partials/login.html', '/login', error=error
-                               ) if htmx else render_template('login.html', error=error)
+            if htmx():
+                return render_htmx('partials/login.html', '/login', error=error)
+            return render_template('login.html', error=error)
 
         session['account_id'] = user[0]['id']
 
@@ -52,56 +53,56 @@ def login():
         response.headers['X-Reload-Page'] = 'true'
         return response
 
-    if htmx:
+    if htmx():
         return render_htmx('partials/login.html', '/login')
     return render_template('login.html')
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    htmx = request.headers.get('HX-Request') is not None
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        correction = request.form.get('correction')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        correction = request.form.get('correction', '').strip()
         print(f"username: {username}, password: {password}, correction: {correction}")
         if not username:
-            return render_register_page(htmx, 'Missing username', username=username)
-        username = username.strip().lower()
+            return render_register_page('Missing username', username=username)
 
         if not password:
-            return render_register_page(htmx, 'Missing password', username=username)
+            return render_register_page('Missing password', username=username)
 
         if not correction:
-            return render_register_page(htmx, 'Missing repeated password', username=username)
+            return render_register_page('Missing repeated password', username=username)
 
-        password = password.strip()
+        password = password
         if password != correction.strip():
-            return render_register_page(htmx, 'Passwords do not match', username=username)
+            return render_register_page('Passwords do not match', username=username)
 
         valid_pw = check_password(password)
         if not valid_pw:
-            return render_register_page(htmx, 'Password not met requirements', username=username)
+            return render_register_page('Password not met requirements', username=username)
 
-        user_exist = db.execute('SELECT * FROM account WHERE username = ?', username)
+        user_exist = db.execute('SELECT * FROM account WHERE LOWER(username) = ?',
+                                username.lower())
         if len(user_exist) != 0:
-            return render_register_page(htmx, error_text='Username already in use')
+            return render_register_page(error_text='Username already in use')
 
         hash_pw = generate_password_hash(password)
         try:
-            db.execute('INSERT INTO account (username, password) VALUES (?, ?)', username, hash_pw)
+            db.execute('INSERT INTO account (username, password) VALUES (?, ?)',
+                       username, hash_pw)
         except RuntimeError:
-            return render_register_page(htmx, 'Something went wrong', username=username)
+            return render_register_page('Something went wrong', username=username)
 
-        if htmx:
-            return render_htmx('partial/dashboard.html', '/app', username=username)
-        return redirect('/app')
+        if htmx():
+            return render_htmx('partials/login.html', '/login', username=username)
+        return redirect('/login')
 
     return render_htmx('partials/register.html', '/register') if htmx else render_template('register.html')
 
 
-def render_register_page(htmx, error_text, username=''):
+def render_register_page(error_text, username=''):
     message = {'error': error_text}
     return render_htmx(
         'partials/register.html', '/register', message=message, username=username
-    ) if htmx else render_template('register.html', message=message, username=username)
+    ) if htmx() else render_template('register.html', message=message, username=username)
