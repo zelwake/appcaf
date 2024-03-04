@@ -1,5 +1,5 @@
 from db import db
-from enum import Enum, member
+from enum import Enum
 
 
 class AllowedWordTables(Enum):
@@ -47,3 +47,22 @@ def insert_word_pair(table, id1, id2):
         print(f'Error while creating pairs:\n{e}')
         return False
     return True
+
+
+def find_word_pair(id1, id2):
+    allowed_pair_tables = [table.value for table in DatabaseWordPairTable]
+    for table in allowed_pair_tables:
+        if id1 in table and id2 in table:
+            return table
+    else:
+        return False
+
+
+def dict_to_list(dictionary, key):
+    new_list = []
+    for item in dictionary:
+        if key:
+            new_list.append(item[key])
+        else:
+            new_list.append(item)
+    return new_list
