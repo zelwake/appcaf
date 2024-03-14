@@ -320,9 +320,21 @@ def test_result(test_id):
              f'JOIN {lang_to}_word as wt ON wt.id = wp.{lang_to}_word_id '
              'WHERE twr.test_id = ? ORDER BY twr.round')
     test_word_info = db.execute(query, test_id)
+    normalized_info = {
+        'rounds': test_info['total'],
+        'language_from': lang_from,
+        'language_to': lang_to
+    }
+    for row in test_word_info:
+        if row['round'] in normalized_info:
+            normalized_info[row['round']]['word_to'] += f', {row['word_to']}'
+        else:
+            normalized_info[row['round']] = row
 
-    print(test_word_info)
+    print(normalized_info)
 
-    return abort(500)
+    if htmx():
+        return render_htmx('partials/results.html', url=f'/app/test/{test_id}/results', content=normalized_info)
+    return render_template('results.html', content=normalized_info)
 
 

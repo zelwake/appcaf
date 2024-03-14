@@ -1,0 +1,49 @@
+.flag-ico {
+    max-width: 5rem;
+    box-shadow: 0 0 10px 5px #CCC;
+}
+
+.results-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 80%;
+    max-width: 70rem;
+    row-gap: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.results-row {
+    display: grid;
+    grid-row: span 2;
+    grid-column: span 2;
+    grid-template-columns: subgrid;
+    background-color: #CCC;
+    border: 2px solid #333;
+
+    p {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        margin-bottom: 0;
+    }
+
+    & > p {
+        border-bottom: 2px solid #555;
+    }
+
+    & > p:first-child {
+        border-right: 1px solid #555;
+    }
+
+    & > p:last-child {
+        border-left: 1px solid #555;
+    }
+
+    & > div {
+        grid-column: 1 / span 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0.5rem;
+    }
+}

@@ -1,0 +1,40 @@
+<title>Results</title>
+
+<div class="d-flex w-100 justify-content-center mt-5 align-items-center gap-3">
+    <img src="{{ url_for('static', filename='/public/flags/' + content.language_from + '.svg') }}"
+         alt="{{ content.language_from }}"
+         class="flag-ico"
+    >
+    &triangleright;
+    <img src="{{ url_for('static', filename='/public/flags/' + content.language_to + '.svg') }}"
+         alt="{{ content.language_to }}"
+         class="flag-ico"
+    >
+</div>
+
+<h2 class="text-center mt-4">Test Results</h2>
+
+<div class="results-table mt-4">
+    {% for key in range(content.rounds + 1) %}
+        {% if key in content %}
+            <div class="results-row">
+                <p class="text-start fs-3">{{ content[key].word_from | capitalize }}</p>
+                <p class="text-end fs-3">
+                    {% if content[key].try == 1 %}
+                        {{ content[key].answer_one | capitalize }}
+                    {% else %}
+                        {{ content[key].answer_two | capitalize }}
+                    {% endif %}
+                </p>
+                <div class="{% if content[key].try == 2 and not content[key].answer_two == None and not content[key].answer_two in content[key].word_to %}
+                    bg-danger{% else %}bg-success{% endif %} bg-gradient">
+                    {% if content[key].try == 2 and not content[key].answer_two == None and not content[key].answer_two in content[key].word_to %}
+                        <p class="text-center text-light">{{ content[key].word_to | capitalize }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<button hx-get="/app/test" hx-target="main" type="button" class="btn btn-info text-black mt-4 mx-auto d-block mb-4">Back</button>
