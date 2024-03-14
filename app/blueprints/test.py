@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from flask import Blueprint, render_template, session, request, redirect, make_response
+from flask import Blueprint, render_template, session, request, redirect, make_response, abort
 
 from db import db
 from helpers.database_helpers import find_word_pair, dict_to_list
@@ -220,6 +220,10 @@ def check_answer(test_id):
         r.headers['HX-Retarget'] = '#error_message'
         return r
     pair_table = find_word_pair(test_info['language_from'], test_info['language_to'])
+    if not pair_table:
+        r = make_response('Pair doesn\'t exist')
+        r.headers['HX-Retarget'] = '#error_message'
+        return r
     possible_answers = db.execute(f'SELECT word FROM {test_info["language_to"]}_word WHERE id IN ('
                                   f'SELECT {test_info["language_from"]}_word_id FROM {pair_table} '
                                   f'WHERE {test_info["language_to"]}_word_id = ('
@@ -290,3 +294,35 @@ def check_answer(test_id):
                 return r
 
     return render_htmx('partials/test.html', content=content)
+
+
+@test_bp.get('/app/test/<int:test_id>/results')
+@login_required
+def test_result(test_id):
+    test = db.execute('SELECT * FROM test_account_relation WHERE test_id = ? AND account_id = ?',
+                      test_id, session.get('account_id'))
+    if not test:
+        return redirect('/app/test')
+
+    test_info = db.execute('SELECT * FROM test WHERE id = ? AND finished = true',
+                           test_id)
+    if not test_info:
+        return redirect('/app/test')
+
+    test_info = test_info[0]
+    lang_from, lang_to = test_info['language_from'], test_info['language_to']
+    table_pair = find_word_pair(lang_from, lang_to)
+
+    query = ('SELECT twr.round, wf.word as word_from, wt.word as word_to, twr.try, twr.answer_one, twr.answer_two '
+             'FROM test_word_relation as twr '
+             f'JOIN {lang_from}_word as wf ON wf.id = twr.word_id '
+             f'JOIN {table_pair} as wp ON wp.{lang_from}_word_id = wf.id '
+             f'JOIN {lang_to}_word as wt ON wt.id = wp.{lang_to}_word_id '
+             'WHERE twr.test_id = ? ORDER BY twr.round')
+    test_word_info = db.execute(query, test_id)
+
+    print(test_word_info)
+
+    return abort(500)
+
+
