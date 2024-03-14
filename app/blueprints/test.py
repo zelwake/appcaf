@@ -325,13 +325,20 @@ def test_result(test_id):
     normalized_info = {
         'rounds': test_info['total'],
         'language_from': lang_from,
-        'language_to': lang_to
+        'language_to': lang_to,
+        'right': 0,
+        'wrong': 0,
     }
     for row in test_word_info:
         if row['round'] in normalized_info:
             normalized_info[row['round']]['word_to'] += f', {row['word_to']}'
         else:
             normalized_info[row['round']] = row
+
+        if row['try'] == 2 and row['answer_two'] not in row['word_to']:
+            normalized_info['wrong'] += 1
+        else:
+            normalized_info['right'] += 1
 
     if htmx():
         return render_htmx('partials/results.html', url=f'/app/test/{test_id}/results', content=normalized_info)

@@ -3,6 +3,30 @@
     box-shadow: 0 0 10px 5px #CCC;
 }
 
+.arrow {
+    transform: rotate(90deg);
+    color: black;
+}
+
+.graph-circle {
+    width: 150px;
+    aspect-ratio: 1 / 1;
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.graph-circle:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(green 0deg, green calc(var(--p)*1%), red calc(var(--p)*1%), red 360deg);
+}
+
 .results-table {
     display: grid;
     grid-template-columns: 1fr 1fr;
