@@ -24,7 +24,9 @@
         <input type="number" name="number" class="form-control" min="1" placeholder="Number of words" required>
     </label>
 
-    <button type="submit" class="btn btn-lg btn-success">Create new test</button>
+    <button type="submit" class="btn btn-lg btn-success">Create new test
+        <img class="htmx-indicator" src="{{ url_for('static', filename='public/loaders/rings.svg') }}">
+    </button>
 </form>
 
 {% if content.error %}

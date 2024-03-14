@@ -81,10 +81,14 @@ def create_test():
         return render_htmx('partials/test_new.html', content=content)
 
     # https://stackoverflow.com/questions/1253561/sqlite-order-by-rand
-    query = f'SELECT * FROM {pair_table} WHERE {language_from}_word_id IN (' \
-            f'SELECT DISTINCT {language_from}_word_id FROM {pair_table} ORDER BY random() LIMIT ?)'
+    query = (f'SELECT DISTINCT {language_from}_word_id, word  FROM {pair_table} as wp ' 
+             f'JOIN {language_from}_word as wf ON wf.id = wp.{language_from}_word_id WHERE {language_from}_word_id IN (' 
+             f'SELECT DISTINCT {language_from}_word_id FROM {pair_table} ORDER BY random() LIMIT ?)')
+
     word_pairs = db.execute(query, number_of_words)
     number_of_words = len(word_pairs)
+
+    print(word_pairs)
 
     if number_of_words < 1:
         content['error'] = 'There are no pairs for this language combination'
@@ -114,10 +118,10 @@ def create_test():
             'language_to': language_to,
             'round': test_round,
             'total': number_of_words,
-            'word_from': word_pairs[0][f'{language_from}_word_id'],
+            'word_from': word_pairs[0]['word'],
             'test_id': test_id
         }
-        return render_htmx('partials/test.html', f'app/test/{test_id}', content=content)
+        return render_htmx('partials/test.html', f'/app/test/{test_id}', content=content)
 
     except RuntimeError as e:
         print(e)
