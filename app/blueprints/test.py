@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from flask import Blueprint, render_template, session, request, redirect, make_response, abort
+from flask import Blueprint, render_template, session, request, redirect, make_response
 
 from db import db
 from helpers.database_helpers import find_word_pair, dict_to_list
@@ -81,14 +81,12 @@ def create_test():
         return render_htmx('partials/test_new.html', content=content)
 
     # https://stackoverflow.com/questions/1253561/sqlite-order-by-rand
-    query = (f'SELECT DISTINCT {language_from}_word_id, word  FROM {pair_table} as wp ' 
-             f'JOIN {language_from}_word as wf ON wf.id = wp.{language_from}_word_id WHERE {language_from}_word_id IN (' 
+    query = (f'SELECT DISTINCT {language_from}_word_id, word  FROM {pair_table} as wp '
+             f'JOIN {language_from}_word as wf ON wf.id = wp.{language_from}_word_id WHERE {language_from}_word_id IN ('
              f'SELECT DISTINCT {language_from}_word_id FROM {pair_table} ORDER BY random() LIMIT ?)')
 
     word_pairs = db.execute(query, number_of_words)
     number_of_words = len(word_pairs)
-
-    print(word_pairs)
 
     if number_of_words < 1:
         content['error'] = 'There are no pairs for this language combination'
@@ -225,7 +223,7 @@ def check_answer(test_id):
         return r
     pair_table = find_word_pair(test_info['language_from'], test_info['language_to'])
     if not pair_table:
-        r = make_response('Pair doesn\'t exist')
+        r = make_response("Pair doesn't exist")
         r.headers['HX-Retarget'] = '#error_message'
         return r
     possible_answers = db.execute(f'SELECT word FROM {test_info["language_to"]}_word WHERE id IN ('
@@ -335,10 +333,6 @@ def test_result(test_id):
         else:
             normalized_info[row['round']] = row
 
-    print(normalized_info)
-
     if htmx():
         return render_htmx('partials/results.html', url=f'/app/test/{test_id}/results', content=normalized_info)
     return render_template('results.html', content=normalized_info)
-
-

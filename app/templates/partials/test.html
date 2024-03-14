@@ -1,9 +1,15 @@
 <title>Test {{ content.language_from }} -> {{ content.language_to }}</title>
 
-<div class="d-flex justify-content-center mt-5">
-    <img src="/public/flags/{{ content.language_from }}.png" alt="{{ content.language_from }}">
+<div class="d-flex w-100 justify-content-center mt-3 align-items-center gap-3">
+    <img src="{{ url_for('static', filename='/public/flags/' + content.language_from + '.svg') }}"
+         alt="{{ content.language_from }}"
+         class="flag-ico"
+    >
     &triangleright;
-    <img src="/public/flags/{{ content.language_to }}.png" alt="{{ content.language_to }}">
+    <img src="{{ url_for('static', filename='/public/flags/' + content.language_to + '.svg') }}"
+         alt="{{ content.language_to }}"
+         class="flag-ico"
+    >
 </div>
 
 <p class="text-center fs-4 mt-2">{{ content.round }} / {{ content.total }}</p>
@@ -15,7 +21,7 @@
         Answer:
         <input type="text" name="answer" class="form-control mt-1" autocomplete="off"
                {% if content.user_answer %} value="{{ content.user_answer }}" {% endif %}
-               {% if content.finished or content.success %} readonly disabled
+               {% if content.finished or content.success or content.disable_again %} readonly disabled
                {% else %} required autofocus {% endif %}>
     </label>
     <p id="error_message" class="text-danger fs-5 mt-1" style="min-height: 2rem"></p>
