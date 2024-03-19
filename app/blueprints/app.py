@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request, render_template, make_response, session, redirect
 
 from db import db
@@ -25,10 +27,13 @@ def dashboard():
         return redirect('/login')
 
     last_five_tests = db.execute(
-        'SELECT id, name, start_time, round, total FROM test WHERE id IN ('
+        'SELECT id, name, start_time, round, total, language_from, language_to FROM test WHERE id IN ('
         'SELECT test_id FROM test_account_relation WHERE account_id = ?'
         ') AND finished = 0 ORDER BY start_time DESC LIMIT 5',
         account_id)
+    for test in last_five_tests:
+        test['start_time'] = datetime.strptime(test['start_time'], '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y %H:%M')
+        test['name'] = f'{test["language_from"]} - {test["language_to"]}'
     content['last_five_tests'] = last_five_tests
 
     if htmx and not reload_page:

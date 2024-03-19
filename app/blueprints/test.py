@@ -85,6 +85,10 @@ def create_test():
              f'JOIN {language_from}_word as wf ON wf.id = wp.{language_from}_word_id WHERE {language_from}_word_id IN ('
              f'SELECT DISTINCT {language_from}_word_id FROM {pair_table} ORDER BY random() LIMIT ?)')
 
+    print(language_from)
+    print(pair_table)
+    print(query)
+
     word_pairs = db.execute(query, number_of_words)
     number_of_words = len(word_pairs)
 
@@ -114,7 +118,7 @@ def create_test():
         content = {
             'language_from': language_from,
             'language_to': language_to,
-            'round': test_round,
+            'round': 1,
             'total': number_of_words,
             'word_from': word_pairs[0]['word'],
             'test_id': test_id
@@ -151,6 +155,7 @@ def show_test(test_id):
             try:
                 db.execute('UPDATE test SET round = ? WHERE id = ?',
                            test_info['round'] + 1, test_id)
+                # TODO add blank answer to second try if its None or empty or adjust the check in test results function
                 db.execute('UPDATE test_word_relation SET try = 2 WHERE test_id = ? AND round = ?',
                            test_id, test_info['round'])
                 return redirect(f'/app/test/{test_id}')
@@ -226,11 +231,19 @@ def check_answer(test_id):
         r = make_response("Pair doesn't exist")
         r.headers['HX-Retarget'] = '#error_message'
         return r
+
     possible_answers = db.execute(f'SELECT word FROM {test_info["language_to"]}_word WHERE id IN ('
-                                  f'SELECT {test_info["language_from"]}_word_id FROM {pair_table} '
-                                  f'WHERE {test_info["language_to"]}_word_id = ('
+                                  f'SELECT {test_info["language_to"]}_word_id FROM {pair_table} '
+                                  f'WHERE {test_info["language_from"]}_word_id = ('
                                   'SELECT word_id FROM test_word_relation WHERE test_id = ? AND round = ?))',
                                   test_id, test_info['round'])
+    query = (f'SELECT word FROM {test_info["language_to"]}_word WHERE id IN ('
+             f'SELECT {test_info["language_to"]}_word_id FROM {pair_table} '
+             f'WHERE {test_info["language_from"]}_word_id = ('
+             'SELECT word_id FROM test_word_relation')
+
+    print(query)
+    print(possible_answers)
     if not possible_answers:
         r = make_response('Nothing to compare with')
         r.headers['HX-Retarget'] = '#error_message'
@@ -328,17 +341,21 @@ def test_result(test_id):
         'language_to': lang_to,
         'right': 0,
         'wrong': 0,
+        'rows': {}
     }
     for row in test_word_info:
-        if row['round'] in normalized_info:
-            normalized_info[row['round']]['word_to'] += f', {row['word_to']}'
+        if row['round'] in normalized_info['rows']:
+            normalized_info['rows'][row['round']]['word_to'] += f', {row['word_to']}'
         else:
-            normalized_info[row['round']] = row
+            normalized_info['rows'][row['round']] = row
 
-        if row['try'] == 2 and row['answer_two'] not in row['word_to']:
+    for _, row in normalized_info['rows'].items():
+        if row['try'] == 2 and (not row['answer_two'] or row['answer_two'] not in row['word_to']):
             normalized_info['wrong'] += 1
+            row['result'] = 'wrong'
         else:
             normalized_info['right'] += 1
+            row['result'] = 'right'
 
     if htmx():
         return render_htmx('partials/results.html', url=f'/app/test/{test_id}/results', content=normalized_info)

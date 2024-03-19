@@ -64,9 +64,8 @@ def new_word():
             query += f'{"&" if len(query) else "?"}f={french_word}'
 
         return redirect(f'/app/word{query}')
-        # if htmx():
-        #     return render_htmx('partials/words.html', f'/app/word{query}')
-        # return render_htmx('words.html')
+
+    print(czech_id, english_id, french_id)
 
     try:
         db.execute('BEGIN TRANSACTION')

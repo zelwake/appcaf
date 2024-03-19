@@ -64,7 +64,7 @@ def register():
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
         correction = request.form.get('correction', '').strip()
-        print(f"username: {username}, password: {password}, correction: {correction}")
+
         if not username:
             return render_register_page('Missing username', username=username)
 

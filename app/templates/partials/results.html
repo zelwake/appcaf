@@ -24,20 +24,20 @@
 
 <div class="results-table mt-4">
     {% for key in range(content.rounds + 1) %}
-        {% if key in content %}
+        {% if key in content.rows %}
+            {% set row = content.rows[key] %}
             <div class="results-row">
-                <p class="text-start fs-3">{{ content[key].word_from | capitalize }}</p>
+                <p class="text-start fs-3">{{ row.word_from | capitalize }}</p>
                 <p class="text-end fs-3">
-                    {% if content[key].try == 1 %}
-                        {{ content[key].answer_one | capitalize }}
+                    {% if row.try == 1 %}
+                        {{ row.answer_one | capitalize }}
                     {% else %}
-                        {{ content[key].answer_two | capitalize }}
+                        {{ row.answer_two if row.answer_two else 'Skipped answer' | capitalize }}
                     {% endif %}
                 </p>
-                <div class="{% if content[key].try == 2 and not content[key].answer_two == None and content[key].answer_two not in content[key].word_to %}
-                    bg-danger{% else %}bg-success{% endif %} bg-gradient">
-                    {% if content[key].try == 2 and not content[key].answer_two == None and content[key].answer_two not in content[key].word_to %}
-                        <p class="text-center text-light">{{ content[key].word_to | capitalize }}</p>
+                <div class="{% if row.result == 'wrong' %}bg-danger{% elif row.result == 'right' %}bg-success{% endif %} bg-gradient">
+                    {% if row.result == 'wrong' %}
+                        <p class="text-center text-light">{{ row.word_to | capitalize }}</p>
                     {% endif %}
                 </div>
             </div>
