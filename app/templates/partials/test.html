@@ -1,6 +1,6 @@
 <title>Test {{ content.language_from }} -> {{ content.language_to }}</title>
 
-<div class="d-flex w-100 justify-content-center mt-3 align-items-center gap-3">
+<div class="d-flex w-100 justify-content-center mt-2 mt-md-5 align-items-center gap-3">
     <img src="{{ url_for('static', filename='/public/flags/' + content.language_from + '.svg') }}"
          alt="{{ content.language_from }}"
          class="flag-ico"
@@ -12,7 +12,7 @@
     >
 </div>
 
-<p class="text-center fs-4 mt-2">{{ content.round }} / {{ content.total }}</p>
+<p class="text-center fs-4 mt-2 mt-md-4">{{ content.round }} / {{ content.total }}</p>
 
 <form hx-post="/app/test/{{ content.test_id }}" hx-target="main" class="d-flex flex-column align-items-center">
     <h3 class="fs-2">Word to translate:</h3>

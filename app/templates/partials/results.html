@@ -18,8 +18,8 @@
 
 <div class="graph px-4">
     <div class="graph-circle" style="--p: {{ content.right / content.rounds * 100 }}"></div>
-    <p class="text-success text-center fs-4">Right: {{ content.right }}</p>
-    <p class="text-danger text-center fs-4">Wrong: {{ content.wrong }}</p>
+    <p class="text-success text-center fs-4 mt-3 mb-0">Right: {{ content.right }}</p>
+    <p class="text-danger text-center fs-4 mb-0">Wrong: {{ content.wrong }}</p>
 </div>
 
 <div class="results-table mt-4">
@@ -45,4 +45,4 @@
     {% endfor %}
 </div>
 
-<button hx-get="/app/test" hx-target="main" type="button" class="btn btn-info text-black mt-4 mx-auto d-block mb-4 border border-light">Back</button>
+<button hx-get="/app/test" hx-target="main" type="button" class="btn btn-secondary btn-lg text-light mt-4 mx-auto d-block mb-4 border border-light">Back</button>

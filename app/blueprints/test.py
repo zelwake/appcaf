@@ -155,7 +155,6 @@ def show_test(test_id):
             try:
                 db.execute('UPDATE test SET round = ? WHERE id = ?',
                            test_info['round'] + 1, test_id)
-                # TODO add blank answer to second try if its None or empty or adjust the check in test results function
                 db.execute('UPDATE test_word_relation SET try = 2 WHERE test_id = ? AND round = ?',
                            test_id, test_info['round'])
                 return redirect(f'/app/test/{test_id}')
@@ -164,6 +163,8 @@ def show_test(test_id):
                 return redirect('/app/test/')
         else:
             try:
+                db.execute('UPDATE test_word_relation SET try = 2 WHERE test_id = ? AND round = ?',
+                           test_id, test_info['round'])
                 db.execute('UPDATE test SET finished = 1, finish_time = CURRENT_TIMESTAMP WHERE id = ?',
                            test_id)
                 return redirect(f'/app/test/{test_id}')
@@ -237,13 +238,7 @@ def check_answer(test_id):
                                   f'WHERE {test_info["language_from"]}_word_id = ('
                                   'SELECT word_id FROM test_word_relation WHERE test_id = ? AND round = ?))',
                                   test_id, test_info['round'])
-    query = (f'SELECT word FROM {test_info["language_to"]}_word WHERE id IN ('
-             f'SELECT {test_info["language_to"]}_word_id FROM {pair_table} '
-             f'WHERE {test_info["language_from"]}_word_id = ('
-             'SELECT word_id FROM test_word_relation')
 
-    print(query)
-    print(possible_answers)
     if not possible_answers:
         r = make_response('Nothing to compare with')
         r.headers['HX-Retarget'] = '#error_message'
