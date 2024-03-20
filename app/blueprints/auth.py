@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, flash, render_template, make_response, redirect
+from flask import Blueprint, request, session, render_template, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import db
@@ -22,15 +22,13 @@ def login():
         username = request.form.get('username', '').strip()
         if not username:
             if htmx():
-                return render_template('partials/login.html', error='Missing username')
-            flash('Please enter username')
+                return render_htmx('partials/login.html', error='Missing username', retarget='main')
             return render_template('login.html')
 
         password = request.form.get('password')
         if not password:
             if htmx():
-                return render_template('partials/login.html', error='Missing password')
-            flash('Please enter password')
+                return render_htmx('partials/login.html', error='Missing password', retarget='main')
             return render_template('login.html')
 
         user = db.execute('SELECT * FROM account WHERE username = ?', username)
@@ -44,7 +42,7 @@ def login():
         if not check_pw or not valid_user:
             error = "Username or password is incorrect"
             if htmx():
-                return render_htmx('partials/login.html', '/login', error=error)
+                return render_htmx('partials/login.html', error=error, retarget='main')
             return render_template('login.html', error=error)
 
         session['account_id'] = user[0]['id']
@@ -66,7 +64,7 @@ def register():
         correction = request.form.get('correction', '').strip()
 
         if not username:
-            return render_register_page('Missing username', username=username)
+            return render_register_page('Missing username')
 
         if not password:
             return render_register_page('Missing password', username=username)

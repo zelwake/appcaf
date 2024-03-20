@@ -65,8 +65,6 @@ def new_word():
 
         return redirect(f'/app/word{query}')
 
-    print(czech_id, english_id, french_id)
-
     try:
         db.execute('BEGIN TRANSACTION')
         if english_id and french_id:

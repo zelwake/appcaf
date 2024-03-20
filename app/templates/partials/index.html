@@ -1,1 +1,4 @@
-<h2 class="text-center">Welcome to APP ČAF</h2>
+<h2 class="text-center mt-3 mt-md-5">Welcome to APP ČAF</h2>
+{% if not session["account_id"] %}
+    <p class="text-center fs-4 mt-4">To use this app, you have to log in</p>
+{% endif %}

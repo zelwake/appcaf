@@ -85,10 +85,6 @@ def create_test():
              f'JOIN {language_from}_word as wf ON wf.id = wp.{language_from}_word_id WHERE {language_from}_word_id IN ('
              f'SELECT DISTINCT {language_from}_word_id FROM {pair_table} ORDER BY random() LIMIT ?)')
 
-    print(language_from)
-    print(pair_table)
-    print(query)
-
     word_pairs = db.execute(query, number_of_words)
     number_of_words = len(word_pairs)
 

@@ -1,10 +1,10 @@
 <title>Login</title>
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
 <form hx-post="/login"
       hx-target="body"
       class="form mx-auto mt-5 w-auto d-flex flex-column justify-content-center align-items-center">
+    {% if error %}
+    <p class="text-danger">{{ error }}</p>
+    {% endif %}
     <label class="form-label mb-3">
         Username
         <input type="text" autofocus autocomplete="off" name="username" class="form-control" required/>
