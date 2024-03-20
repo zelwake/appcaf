@@ -1,5 +1,5 @@
 # AppCAF
-#### Video Demo: <https://youtu.be/-VBuk652J6E>
+#### Video Demo:  <https://youtu.be/-VBuk652J6E>
 #### Description:
 
 This application should help you with learning new words in different languages.
