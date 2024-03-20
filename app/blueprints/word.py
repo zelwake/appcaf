@@ -18,7 +18,8 @@ def words():
     content = {"czech_word": czech_word, "english_word": english_word, "french_word": french_word}
     query_url = request.url[request.url.find("?"):]
     if htmx():
-        return render_htmx('partials/words.html', f'/app/word{query_url if len(query_url) > 1 else ""}', content=content)
+        return render_htmx('partials/words.html', f'/app/word{query_url if len(query_url) > 1 else ""}',
+                           content=content)
     return render_template('words.html', content=content)
 
 
@@ -91,5 +92,3 @@ def new_word():
     if htmx():
         return render_htmx('partials/words.html', content={'message': 'Successfully added!'})
     return render_htmx('words.html', content={'message': 'Successfully added!'})
-
-
